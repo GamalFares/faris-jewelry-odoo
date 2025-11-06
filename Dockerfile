@@ -40,6 +40,7 @@ RUN pip install --no-cache-dir \
     psutil==5.9.8 \
     psycopg2-binary==2.9.7 \
     pydot==1.4.2 \
+    pyOpenSSL==23.2.0 \
     PyPDF2==3.0.1 \
     pypdf==3.17.4 \
     pyserial==3.5 \
