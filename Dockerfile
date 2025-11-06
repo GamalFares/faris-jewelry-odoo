@@ -25,9 +25,11 @@ WORKDIR /app
 # Download complete Odoo 17 source
 RUN git clone https://github.com/odoo/odoo.git --branch 17.0 --depth 1
 
-# Copy requirements first for better caching
-COPY requirements.txt .
-RUN pip install --no-cache-dir -r requirements.txt
+# Install Odoo's official requirements
+RUN pip install --no-cache-dir -r odoo/requirements.txt
+
+# Install additional dependencies that might be missing
+RUN pip install --no-cache-dir psycopg2-binary PyPDF2 pypdf
 
 # Copy your custom addons (if they exist)
 COPY custom-addons/ ./custom-addons/
