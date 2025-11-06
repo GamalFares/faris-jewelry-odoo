@@ -4,11 +4,6 @@ services:
     env: python
     plan: free
     buildCommand: |
-      chmod +x build.sh
-      ./build.sh
-    startCommand: |
-      echo "=== Starting Odoo ==="
-      pwd
-      ls -la
-      ls -la odoo/ || echo "odoo directory missing"
-      python odoo/odoo-bin --addons-path=odoo/addons,custom-addons --database=faris_jewelry --db_host=${DB_HOST} --db_user=${DB_USER} --db_password=${DB_PASSWORD} --http-port=$PORT --without-demo=all --admin-passwd=admin123 --proxy-mode
+      pip install -r requirements.txt
+      pip install -e odoo  # Install Odoo in development mode
+    startCommand: python odoo/odoo-bin --addons-path=odoo/addons,custom-addons --database=faris_jewelry --db_host=${DB_HOST} --db_user=${DB_USER} --db_password=${DB_PASSWORD} --http-port=$PORT --without-demo=all --admin-passwd=admin123 --proxy-mode
