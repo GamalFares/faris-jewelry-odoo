@@ -28,6 +28,9 @@ RUN pip install --no-cache-dir -r requirements.txt
 # Copy Odoo code
 COPY . .
 
+# Set Python path to include odoo directory
+ENV PYTHONPATH=/app/odoo:$PYTHONPATH
+
 # Start Odoo
 CMD cd odoo && python odoo-bin \
     --addons-path=addons,../custom-addons \

@@ -1,18 +1,38 @@
-#!/bin/bash
-set -e
+FROM python:3.11-slim
 
-echo "=== Starting Faris Jewelry Odoo ==="
-echo "Current directory: $(pwd)"
-echo "Changing to odoo directory..."
+# Install ALL system dependencies at once
+RUN apt-get update && apt-get install -y \
+    libsasl2-dev \
+    libldap2-dev \
+    libssl-dev \
+    libjpeg-dev \
+    libopenjp2-7-dev \
+    libtiff5-dev \
+    libfreetype6-dev \
+    liblcms2-dev \
+    libwebp-dev \
+    libxml2-dev \
+    libxslt1-dev \
+    zlib1g-dev \
+    libpq-dev \
+    gcc \
+    g++ \
+    && rm -rf /var/lib/apt/lists/*
 
-cd odoo
+WORKDIR /app
 
-echo "Now in directory: $(pwd)"
-echo "Files in current directory:"
-ls -la
+# Copy requirements first for better caching
+COPY requirements.txt .
+RUN pip install --no-cache-dir -r requirements.txt
 
-echo "Starting Odoo..."
-exec python odoo-bin \
+# Copy Odoo code
+COPY . .
+
+# Set Python path to include odoo directory
+ENV PYTHONPATH=/app/odoo:$PYTHONPATH
+
+# Start Odoo
+CMD cd odoo && python odoo-bin \
     --addons-path=addons,../custom-addons \
     --database=faris_jewelry \
     --db_host=${DB_HOST} \
@@ -20,5 +40,5 @@ exec python odoo-bin \
     --db_password=${DB_PASSWORD} \
     --http-port=${PORT} \
     --without-demo=all \
-    --admin-passwd=admin123 \
+    --admin-passwd=${ADMIN_PASSWD:-admin123} \
     --proxy-mode
