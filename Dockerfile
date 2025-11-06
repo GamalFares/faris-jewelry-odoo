@@ -48,6 +48,7 @@ RUN pip install --no-cache-dir \
     qrcode==7.4.2 \
     reportlab==4.0.4 \
     requests==2.31.0 \
+    rjsmin==1.2.0 \
     urllib3==2.0.7 \
     vobject==0.9.6.1 \
     Werkzeug==3.0.1 \
