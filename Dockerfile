@@ -19,7 +19,7 @@ WORKDIR /app
 # Download Odoo 17
 RUN git clone https://github.com/odoo/odoo.git --branch 17.0 --depth 1
 
-# Install ALL Odoo dependencies
+# Install Odoo dependencies
 RUN pip install --no-cache-dir \
     Babel==2.14.0 \
     chardet==5.2.0 \
@@ -66,10 +66,14 @@ RUN useradd -m -U odoo-user
 RUN chown -R odoo-user:odoo-user /app
 USER odoo-user
 
-# Start Odoo with SQLite (for now - we'll switch to PostgreSQL later)
+# Start Odoo with PostgreSQL
 CMD cd odoo && python odoo-bin \
     --addons-path=addons,../custom-addons \
-    --database=file:///tmp/faris_jewelry.db \
+    --database=${DB_NAME} \
+    --db_host=${DB_HOST} \
+    --db_user=${DB_USER} \
+    --db_password=${DB_PASSWORD} \
+    --db_port=5432 \
     --http-port=${PORT} \
     --without-demo=all \
     --proxy-mode
