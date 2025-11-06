@@ -25,20 +25,11 @@ WORKDIR /app
 COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
-# Copy Odoo code
+# Copy Odoo code and start script
 COPY . .
 
-# Set Python path to include odoo directory
-ENV PYTHONPATH=/app/odoo:$PYTHONPATH
+# Make start script executable
+RUN chmod +x start.sh
 
-# Start Odoo
-CMD cd odoo && python odoo-bin \
-    --addons-path=addons,../custom-addons \
-    --database=faris_jewelry \
-    --db_host=${DB_HOST} \
-    --db_user=${DB_USER} \
-    --db_password=${DB_PASSWORD} \
-    --http-port=${PORT} \
-    --without-demo=all \
-    --admin-passwd=${ADMIN_PASSWD:-admin123} \
-    --proxy-mode
+# Use the start script
+CMD ["./start.sh"]
