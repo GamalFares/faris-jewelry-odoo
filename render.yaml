@@ -1,0 +1,27 @@
+services:
+  - type: web
+    name: faris-jewelry-odoo
+    env: python
+    plan: free
+    buildCommand: pip install -r requirements.txt
+    startCommand: cd odoo && python odoo-bin --addons-path=addons,../custom-addons --database=faris_jewelry --db_host=${DB_HOST} --db_user=${DB_USER} --db_password=${DB_PASSWORD} --http-port=${PORT} --without-demo=all --admin-passwd=${ADMIN_PASSWD:-admin123} --proxy-mode
+    envVars:
+      - key: DB_HOST
+        fromDatabase:
+          name: faris-jewelry-db
+          property: host
+      - key: DB_USER
+        fromDatabase:
+          name: faris-jewelry-db
+          property: user
+      - key: DB_PASSWORD
+        fromDatabase:
+          name: faris-jewelry-db
+          property: password
+      - key: ADMIN_PASSWD
+        value: admin123
+
+databases:
+  - name: faris-jewelry-db
+    plan: free
+    databaseName: faris_jewelry

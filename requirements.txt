@@ -1,16 +1,17 @@
+# Use pre-compiled wheels to avoid build issues
 psycopg2-binary==2.9.7
 Jinja2==3.1.2
-MarkupSafe==2.1.3
+MarkupSafe==2.1.5
 lxml==5.2.1
 python-dateutil==2.8.2
 pytz==2024.1
 Babel==2.14.0
-Pillow==10.2.0
+Pillow==10.1.0  # Use a version with pre-built wheels
 reportlab==4.0.4
 polib==1.2.0
 pyserial==3.5
 zeep==4.2.1
-pyOpenSSL==23.3.0
+pyOpenSSL==23.2.0
 num2words==0.5.13
 ofxparse==0.21
 xlrd==2.0.1
