@@ -19,7 +19,7 @@ WORKDIR /app
 # Download Odoo 17
 RUN git clone https://github.com/odoo/odoo.git --branch 17.0 --depth 1
 
-# Install Python dependencies manually (skip problematic requirements.txt)
+# Install Python dependencies manually
 RUN pip install --no-cache-dir \
     Babel==2.14.0 \
     chardet==5.2.0 \
@@ -33,6 +33,7 @@ RUN pip install --no-cache-dir \
     Jinja2==3.1.2 \
     libsass==0.22.0 \
     lxml==5.2.1 \
+    lxml_html_clean==0.4.3 \
     MarkupSafe==2.1.3 \
     num2words==0.5.13 \
     passlib==1.7.4 \
