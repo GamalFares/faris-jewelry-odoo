@@ -17,19 +17,32 @@ RUN apt-get update && apt-get install -y \
     libpq-dev \
     gcc \
     g++ \
+    git \
     && rm -rf /var/lib/apt/lists/*
 
 WORKDIR /app
+
+# Download complete Odoo 17 source
+RUN git clone https://github.com/odoo/odoo.git --branch 17.0 --depth 1
 
 # Copy requirements first for better caching
 COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
-# Copy Odoo code and start script
-COPY . .
+# Copy your custom addons (if they exist)
+COPY custom-addons/ ./custom-addons/
 
-# Make start script executable
-RUN chmod +x start.sh
+# Set Python path to include odoo directory
+ENV PYTHONPATH=/app/odoo:$PYTHONPATH
 
-# Use the start script
-CMD ["./start.sh"]
+# Start Odoo
+CMD cd odoo && python odoo-bin \
+    --addons-path=addons,../custom-addons \
+    --database=faris_jewelry \
+    --db_host=${DB_HOST} \
+    --db_user=${DB_USER} \
+    --db_password=${DB_PASSWORD} \
+    --http-port=${PORT} \
+    --without-demo=all \
+    --admin-passwd=${ADMIN_PASSWD:-admin123} \
+    --proxy-mode
