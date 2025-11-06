@@ -4,16 +4,11 @@ services:
     env: python
     plan: free
     buildCommand: |
-      set -e  # Exit on any error
-      echo "=== Starting Odoo 17 Build ==="
-      echo "Downloading Odoo 17..."
-      git clone https://github.com/odoo/odoo.git --branch 17.0 --depth 1
-      echo "Installing Python dependencies..."
-      pip install -r requirements.txt
-      echo "=== Build Verification ==="
-      ls -la odoo/ && echo "✓ Odoo directory exists"
-      ls -la odoo/odoo-bin && echo "✓ odoo-bin exists"
-      ls -la odoo/addons/ && echo "✓ addons directory exists"
-      ls -la custom-addons/ && echo "✓ custom-addons directory exists"
-      echo "=== Build Complete ==="
-    startCommand: python odoo/odoo-bin --addons-path=odoo/addons,custom-addons --database=faris_jewelry --db_host=${DB_HOST} --db_user=${DB_USER} --db_password=${DB_PASSWORD} --http-port=$PORT --without-demo=all --admin-passwd=admin123 --proxy-mode
+      chmod +x build.sh
+      ./build.sh
+    startCommand: |
+      echo "=== Starting Odoo ==="
+      pwd
+      ls -la
+      ls -la odoo/ || echo "odoo directory missing"
+      python odoo/odoo-bin --addons-path=odoo/addons,custom-addons --database=faris_jewelry --db_host=${DB_HOST} --db_user=${DB_USER} --db_password=${DB_PASSWORD} --http-port=$PORT --without-demo=all --admin-passwd=admin123 --proxy-mode
