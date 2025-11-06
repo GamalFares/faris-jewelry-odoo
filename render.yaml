@@ -4,7 +4,10 @@ services:
     env: python
     plan: free
     buildCommand: |
-      chmod +x build.sh
-      ./build.sh
+      # Download Odoo 17 source code if not present
+      if [ ! -d "odoo" ]; then
+          echo "Downloading Odoo 17 source code..."
+          git clone https://github.com/odoo/odoo.git --branch 17.0 --depth 1
+      fi
       pip install -r requirements.txt
     startCommand: python odoo/odoo-bin --addons-path=odoo/addons,custom-addons --database=faris_jewelry --db_host=${DB_HOST} --db_user=${DB_USER} --db_password=${DB_PASSWORD} --http-port=$PORT --without-demo=all --admin-passwd=admin123 --proxy-mode

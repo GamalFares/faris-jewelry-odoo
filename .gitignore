@@ -46,5 +46,8 @@ Thumbs.db
 *.tmp
 *.temp
 
-# Local config files (don't upload to production)
-odoo.conf
+# Odoo - exclude most files but keep odoo-bin
+/odoo/**
+!/odoo/odoo-bin
+!/odoo/addons/
+!/odoo/odoo/
