@@ -37,7 +37,12 @@ COPY custom-addons/ ./custom-addons/
 # Set Python path to include odoo directory
 ENV PYTHONPATH=/app/odoo:$PYTHONPATH
 
-# Start Odoo
+# Create non-root user for security
+RUN useradd -m -U odoo-user
+RUN chown -R odoo-user:odoo-user /app
+USER odoo-user
+
+# Start Odoo with correct Odoo 17 syntax
 CMD cd odoo && python odoo-bin \
     --addons-path=addons,../custom-addons \
     --database=faris_jewelry \
@@ -46,5 +51,4 @@ CMD cd odoo && python odoo-bin \
     --db_password=${DB_PASSWORD} \
     --http-port=${PORT} \
     --without-demo=all \
-    --admin-passwd=${ADMIN_PASSWD:-admin123} \
     --proxy-mode
