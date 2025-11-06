@@ -5,28 +5,4 @@ services:
     plan: free
     buildCommand: |
       pip install -r requirements.txt
-    startCommand: python odoo/odoo-bin --config=render_odoo.conf --database=faris_jewelry --db_host=${DB_HOST} --db_user=${DB_USER} --db_password=${DB_PASSWORD} --http-port=$PORT
-    envVars:
-      - key: DB_HOST
-        fromDatabase:
-          name: faris-jewelry-db
-          property: host
-      - key: DB_USER
-        fromDatabase:
-          name: faris-jewelry-db
-          property: user
-      - key: DB_PASSWORD
-        fromDatabase:
-          name: faris-jewelry-db
-          property: password
-      - key: DB_NAME
-        fromDatabase:
-          name: faris-jewelry-db
-          property: database
-
-  - type: postgresql
-    name: faris-jewelry-db
-    plan: free
-    ipAllowList: []
-    databases:
-      - name: faris_jewelry
+    startCommand: python odoo/odoo-bin --addons-path=odoo/addons,custom-addons --database=faris_jewelry --db_host=${DB_HOST} --db_user=${DB_USER} --db_password=${DB_PASSWORD} --http-port=$PORT --without-demo=all --admin-passwd=admin123 --proxy-mode

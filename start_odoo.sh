@@ -1,17 +1,19 @@
 #!/bin/bash
-source odoo-venv/bin/activate
+set -e
 
-# Check if database needs initialization
-if ! psql -lqt | cut -d \| -f 1 | grep -qw faris_jewelry; then
-    echo "Creating database faris_jewelry..."
-    createdb faris_jewelry
-fi
+echo "=== Starting Faris Jewelry Odoo on Render ==="
 
-# Check if base module is installed
-if ! psql faris_jewelry -c "SELECT name FROM ir_module_module WHERE state='installed' LIMIT 1;" | grep -q base; then
-    echo "Initializing database with base modules..."
-    python odoo/odoo-bin --config=odoo.conf -i base --stop-after-init
-fi
+# Wait a bit for database to be ready
+sleep 5
 
-echo "Starting Odoo..."
-python odoo/odoo-bin --config=odoo.conf
+# Start Odoo
+exec python odoo/odoo-bin \
+    --addons-path=odoo/addons,custom-addons \
+    --database=faris_jewelry \
+    --db_host=${DB_HOST} \
+    --db_user=${DB_USER} \
+    --db_password=${DB_PASSWORD} \
+    --http-port=$PORT \
+    --without-demo=all \
+    --admin-passwd=admin123 \
+    --proxy-mode
