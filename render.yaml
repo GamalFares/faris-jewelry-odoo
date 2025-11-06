@@ -5,5 +5,5 @@ services:
     plan: free
     buildCommand: |
       pip install -r requirements.txt
-      pip install -e odoo  # Install Odoo in development mode
-    startCommand: python odoo/odoo-bin --addons-path=odoo/addons,custom-addons --database=faris_jewelry --db_host=${DB_HOST} --db_user=${DB_USER} --db_password=${DB_PASSWORD} --http-port=$PORT --without-demo=all --admin-passwd=admin123 --proxy-mode
+    startCommand: |
+      cd odoo && python odoo-bin --addons-path=addons,../custom-addons --database=faris_jewelry --db_host=${DB_HOST} --db_user=${DB_USER} --db_password=${DB_PASSWORD} --http-port=$PORT --without-demo=all --admin-passwd=admin123 --proxy-mode
