@@ -24,7 +24,7 @@ services:
           name: faris-jewelry-db
           property: database
 
-  - type: pgsql
+  - type: postgresql
     name: faris-jewelry-db
     plan: free
     ipAllowList: []
