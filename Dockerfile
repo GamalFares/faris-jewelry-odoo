@@ -68,7 +68,7 @@ RUN useradd -m -U odoo-user
 RUN chown -R odoo-user:odoo-user /app
 USER odoo-user
 
-# Start Odoo with PostgreSQL
+# Start Odoo with database initialization
 CMD cd odoo && python odoo-bin \
     --addons-path=addons,../custom-addons \
     --database=${DB_NAME} \
@@ -78,4 +78,5 @@ CMD cd odoo && python odoo-bin \
     --db_port=5432 \
     --http-port=${PORT} \
     --without-demo=all \
-    --proxy-mode
+    --proxy-mode \
+    -i base,web,website_sale
