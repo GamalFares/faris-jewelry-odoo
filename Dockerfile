@@ -68,9 +68,9 @@ RUN useradd -m -U odoo-user
 RUN mkdir -p /app/data && chown -R odoo-user:odoo-user /app
 USER odoo-user
 
+# Copy start script and make executable
+COPY start.sh /app/start.sh
+RUN chmod +x /app/start.sh
 
-# Generate assets during build
-RUN cd odoo && python odoo-bin -c /app/odoo.conf --without-demo=all --stop-after-init
-
-# Start Odoo with configuration file
-CMD cd odoo && python odoo-bin -c /app/odoo.conf --http-port=${PORT}
+# Start Odoo
+CMD ["/app/start.sh"]
