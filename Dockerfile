@@ -65,12 +65,17 @@ ENV PYTHONPATH=/app/odoo:$PYTHONPATH
 
 # Create user and data directory
 RUN useradd -m -U odoo-user
-RUN mkdir -p /app/data && chown -R odoo-user:odoo-user /app
-USER odoo-user
+RUN mkdir -p /app/data
 
-# Copy start script and make executable
+# Copy start script and set permissions as root
 COPY start.sh /app/start.sh
 RUN chmod +x /app/start.sh
+
+# Change ownership to odoo-user
+RUN chown -R odoo-user:odoo-user /app
+
+# Switch to odoo-user
+USER odoo-user
 
 # Start Odoo
 CMD ["/app/start.sh"]
