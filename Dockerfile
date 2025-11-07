@@ -68,19 +68,18 @@ RUN useradd -m -U odoo-user
 RUN chown -R odoo-user:odoo-user /app
 USER odoo-user
 
-# Create odoo configuration file
-RUN echo "[options]
-addons_path = /app/odoo/addons,/app/custom-addons
-data_dir = /tmp/odoo-data
-admin_passwd = admin123
-db_name = ${DB_NAME}
-db_host = ${DB_HOST}
-db_user = ${DB_USER}
-db_password = ${DB_PASSWORD}
-db_port = 5432
-without_demo = True
-proxy_mode = True
-" > /app/odoo.conf
+# Create odoo configuration file using proper syntax
+RUN echo "[options]" > /app/odoo.conf && \
+    echo "addons_path = /app/odoo/addons,/app/custom-addons" >> /app/odoo.conf && \
+    echo "data_dir = /tmp/odoo-data" >> /app/odoo.conf && \
+    echo "admin_passwd = admin123" >> /app/odoo.conf && \
+    echo "db_name = faris_jewelry_db" >> /app/odoo.conf && \
+    echo "db_host = dpg-d46h36qli9vc73fekfn0-a.frankfurt-postgres.render.com" >> /app/odoo.conf && \
+    echo "db_user = faris_jewelry_db_user" >> /app/odoo.conf && \
+    echo "db_password = 0bLwx3jy7aSnwmvVTaFbysL8cuOHjPIk" >> /app/odoo.conf && \
+    echo "db_port = 5432" >> /app/odoo.conf && \
+    echo "without_demo = True" >> /app/odoo.conf && \
+    echo "proxy_mode = True" >> /app/odoo.conf
 
 # Start Odoo with configuration file
 CMD cd odoo && python odoo-bin -c /app/odoo.conf --http-port=${PORT} --init=base,web --without-demo=all --proxy-mode
