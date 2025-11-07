@@ -68,15 +68,19 @@ RUN useradd -m -U odoo-user
 RUN chown -R odoo-user:odoo-user /app
 USER odoo-user
 
-# Start Odoo with database initialization
-CMD cd odoo && python odoo-bin \
-    --addons-path=addons,../custom-addons \
-    --database=${DB_NAME} \
-    --db_host=${DB_HOST} \
-    --db_user=${DB_USER} \
-    --db_password=${DB_PASSWORD} \
-    --db_port=5432 \
-    --http-port=${PORT} \
-    --without-demo=all \
-    --proxy-mode \
-    -i base,web,website_sale
+# Create odoo configuration file
+RUN echo "[options]
+addons_path = /app/odoo/addons,/app/custom-addons
+data_dir = /tmp/odoo-data
+admin_passwd = admin123
+db_name = ${DB_NAME}
+db_host = ${DB_HOST}
+db_user = ${DB_USER}
+db_password = ${DB_PASSWORD}
+db_port = 5432
+without_demo = True
+proxy_mode = True
+" > /app/odoo.conf
+
+# Start Odoo with configuration file
+CMD cd odoo && python odoo-bin -c /app/odoo.conf --http-port=${PORT} --init=base,web --without-demo=all --proxy-mode
