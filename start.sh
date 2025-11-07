@@ -12,37 +12,33 @@ export PGDATABASE="${DB_NAME}"
 export PGUSER="${DB_USER}"
 export PGPASSWORD="${DB_PASSWORD}"
 
-# Generate a secure random admin password if not set
+# Generate admin password
 if [ -z "$ADMIN_PASSWORD" ]; then
-    export ADMIN_PASSWORD=$(openssl rand -base64 32 | tr -dc 'a-zA-Z0-9' | head -c 16)
-    echo "🔒 Admin password generated automatically"
+    export ADMIN_PASSWORD="admin123"
+    echo "🔒 Using default admin password"
 else
     echo "🔒 Using provided admin password"
 fi
 
-# Display environment information (without sensitive data)
 echo "=== Environment Configuration ==="
 echo "Database: $PGDATABASE@$PGHOST:$PGPORT"
 echo "Database User: $PGUSER"
-echo "Odoo Data Directory: /app/data"
-echo "HTTP Port: ${PORT:-10000}"
 
 # Create necessary directories
 mkdir -p /app/data /app/logs
 
-# Change to odoo directory
 cd /app/odoo
 
 # Create Odoo configuration file
 cat > /app/odoo.conf << EOF
 [options]
-addons_path = /app/odoo/addons,/app/custom-addons
+addons_path = /app/odoo/addons
 data_dir = /app/data
 admin_passwd = ${ADMIN_PASSWORD}
 db_host = ${PGHOST}
 db_port = ${PGPORT}
 db_user = ${PGUSER}
-db_password = ${PGPASSWORD}
+db_password = ${DB_PASSWORD}
 db_name = ${PGDATABASE}
 without_demo = all
 proxy_mode = True
@@ -69,13 +65,13 @@ try:
     print('✅ Database connection successful')
     exit(0)
 except Exception as e:
-    print(f'❌ Database connection failed: {e}')
+    print(f'Database connection failed: {e}')
     exit(1)
 " 2>/dev/null; then
         break
     else
         if [ $i -eq 30 ]; then
-            echo "💥 Database not ready after 30 seconds, exiting"
+            echo "💥 Database not ready after 30 seconds"
             exit 1
         fi
         echo "⏳ Waiting for database... ($i/30)"
@@ -86,7 +82,8 @@ done
 echo "=== Starting Odoo Server ==="
 echo "🕒 Time: $(date)"
 
-# Start Odoo
+# Start Odoo - let it initialize the database
 exec python odoo-bin \
     --config=/app/odoo.conf \
-    --http-port=${PORT:-10000}
+    --http-port=${PORT:-10000} \
+    --log-level=info
