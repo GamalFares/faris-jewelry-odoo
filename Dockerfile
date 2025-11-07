@@ -63,15 +63,15 @@ COPY custom-addons/ ./custom-addons/
 # Set Python path
 ENV PYTHONPATH=/app/odoo:$PYTHONPATH
 
-# Create user
+# Create user and data directory
 RUN useradd -m -U odoo-user
-RUN chown -R odoo-user:odoo-user /app
+RUN mkdir -p /app/data && chown -R odoo-user:odoo-user /app
 USER odoo-user
 
-# Create odoo configuration file using proper syntax
+# Create odoo configuration file with persistent data directory
 RUN echo "[options]" > /app/odoo.conf && \
     echo "addons_path = /app/odoo/addons,/app/custom-addons" >> /app/odoo.conf && \
-    echo "data_dir = /tmp/odoo-data" >> /app/odoo.conf && \
+    echo "data_dir = /app/data" >> /app/odoo.conf && \
     echo "admin_passwd = ${DB_PASSWORD}" >> /app/odoo.conf && \
     echo "db_name = faris_jewelry_db" >> /app/odoo.conf && \
     echo "db_host = dpg-d46h36qli9vc73fekfn0-a.frankfurt-postgres.render.com" >> /app/odoo.conf && \
@@ -81,5 +81,8 @@ RUN echo "[options]" > /app/odoo.conf && \
     echo "without_demo = True" >> /app/odoo.conf && \
     echo "proxy_mode = True" >> /app/odoo.conf
 
+# Generate assets during build
+RUN cd odoo && python odoo-bin -c /app/odoo.conf --without-demo=all --stop-after-init
+
 # Start Odoo with configuration file
-CMD cd odoo && python odoo-bin -c /app/odoo.conf --http-port=${PORT} --init=base,web --without-demo=all --proxy-mode
+CMD cd odoo && python odoo-bin -c /app/odoo.conf --http-port=${PORT}
