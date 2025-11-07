@@ -1,6 +1,6 @@
 FROM python:3.11-slim
 
-# Install system dependencies
+# Install system dependencies including PostgreSQL development headers
 RUN apt-get update && apt-get install -y \
     libsasl2-dev \
     libldap2-dev \
@@ -14,6 +14,7 @@ RUN apt-get update && apt-get install -y \
     g++ \
     git \
     curl \
+    postgresql-dev \
     && rm -rf /var/lib/apt/lists/* \
     && apt-get clean
 
@@ -24,9 +25,12 @@ RUN git clone https://github.com/odoo/odoo.git --branch 17.0 --depth 1
 
 # Install Odoo dependencies from Odoo's requirements + your custom requirements
 RUN pip install --no-cache-dir --upgrade pip
-RUN pip install --no-cache-dir -r /app/odoo/requirements.txt
+
+# First install psycopg2-binary separately to avoid compilation issues
+RUN pip install --no-cache-dir psycopg2-binary==2.9.7
+
+# Now install Odoo requirements, but skip psycopg2 since we already installed psycopg2-binary
 RUN pip install --no-cache-dir \
-    psycopg2-binary==2.9.7 \
     Babel==2.14.0 \
     chardet==5.2.0 \
     decorator==5.1.1 \
