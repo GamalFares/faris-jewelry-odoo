@@ -72,7 +72,7 @@ USER odoo-user
 RUN echo "[options]" > /app/odoo.conf && \
     echo "addons_path = /app/odoo/addons,/app/custom-addons" >> /app/odoo.conf && \
     echo "data_dir = /tmp/odoo-data" >> /app/odoo.conf && \
-    echo "admin_passwd = admin123" >> /app/odoo.conf && \
+    echo "admin_passwd = ${DB_PASSWORD}" >> /app/odoo.conf && \
     echo "db_name = faris_jewelry_db" >> /app/odoo.conf && \
     echo "db_host = dpg-d46h36qli9vc73fekfn0-a.frankfurt-postgres.render.com" >> /app/odoo.conf && \
     echo "db_user = faris_jewelry_db_user" >> /app/odoo.conf && \
