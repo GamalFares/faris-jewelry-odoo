@@ -28,10 +28,8 @@ services:
         generateValue: true
       - key: PORT
         value: 10000
-    healthCheckPath: /web/health
 
 databases:
   - name: faris-jewelry-db
     plan: free
-    databaseName: faris_jewelry_zwhi
-    ipAllowList: []
+    databaseName: faris_jewelry

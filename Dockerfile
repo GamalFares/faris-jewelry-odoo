@@ -1,6 +1,6 @@
 FROM python:3.11-slim
 
-# Install system dependencies including PostgreSQL development headers
+# Install system dependencies
 RUN apt-get update && apt-get install -y \
     libsasl2-dev \
     libldap2-dev \
@@ -14,7 +14,7 @@ RUN apt-get update && apt-get install -y \
     g++ \
     git \
     curl \
-    postgresql-dev \
+    libpq-dev \
     && rm -rf /var/lib/apt/lists/* \
     && apt-get clean
 
@@ -23,13 +23,13 @@ WORKDIR /app
 # Download Odoo 17
 RUN git clone https://github.com/odoo/odoo.git --branch 17.0 --depth 1
 
-# Install Odoo dependencies from Odoo's requirements + your custom requirements
+# Install Odoo dependencies
 RUN pip install --no-cache-dir --upgrade pip
 
-# First install psycopg2-binary separately to avoid compilation issues
+# Install psycopg2-binary first to avoid compilation issues
 RUN pip install --no-cache-dir psycopg2-binary==2.9.7
 
-# Now install Odoo requirements, but skip psycopg2 since we already installed psycopg2-binary
+# Install Odoo Python dependencies
 RUN pip install --no-cache-dir \
     Babel==2.14.0 \
     chardet==5.2.0 \
@@ -75,7 +75,7 @@ COPY start.sh /app/start.sh
 # Set Python path
 ENV PYTHONPATH=/app/odoo:$PYTHONPATH
 
-# Create user and data directory with proper permissions
+# Create user and data directory
 RUN useradd -m -U -s /bin/bash odoo-user && \
     mkdir -p /app/data /app/logs && \
     chown -R odoo-user:odoo-user /app
@@ -85,10 +85,6 @@ RUN chmod +x /app/start.sh
 
 # Switch to odoo-user
 USER odoo-user
-
-# Health check
-HEALTHCHECK --interval=30s --timeout=10s --start-period=60s --retries=3 \
-    CMD curl -f http://localhost:${PORT:-10000}/web/health || exit 1
 
 # Expose port
 EXPOSE 10000

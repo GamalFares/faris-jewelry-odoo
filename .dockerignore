@@ -1,6 +1,6 @@
 .git
 .gitignore
-
+README.md
 *.log
 *.pyc
 __pycache__
@@ -9,3 +9,5 @@ __pycache__
 env
 .vscode
 .idea
+Dockerfile
+render.yaml
