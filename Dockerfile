@@ -1,7 +1,8 @@
 FROM odoo:17.0
 
-# Install dependencies
 USER root
+
+# Fix package dependencies by not forcing specific versions
 RUN apt-get update && apt-get install -y \
     build-essential \
     python3-dev \
@@ -13,15 +14,15 @@ RUN apt-get update && apt-get install -y \
     libssl-dev \
     libffi-dev \
     libjpeg-dev \
-    libpq-dev \
     libjpeg8-dev \
     liblcms2-dev \
     libblas-dev \
     libatlas-base-dev \
     git \
+    postgresql-client \
     && rm -rf /var/lib/apt/lists/*
 
-# Install wkhtmltopdf
+# Install wkhtmltopdf from official source
 RUN curl -sSL https://github.com/wkhtmltopdf/packaging/releases/download/0.12.6.1-2/wkhtmltox_0.12.6.1-2.bullseye_amd64.deb -o /tmp/wkhtmltopdf.deb \
     && apt-get update \
     && apt-get install -y /tmp/wkhtmltopdf.deb \
@@ -30,14 +31,13 @@ RUN curl -sSL https://github.com/wkhtmltopdf/packaging/releases/download/0.12.6.
 # Switch back to odoo user
 USER odoo
 
-# Copy configuration and entrypoint
+# Copy configuration
 COPY odoo.conf /etc/odoo/
 COPY entrypoint.sh /
-COPY scripts/init-odoo.sh /tmp/
 
-RUN sudo chmod +x /entrypoint.sh /tmp/init-odoo.sh
+RUN sudo chmod +x /entrypoint.sh
 
-EXPOSE 8069 8072
+EXPOSE 8069
 
 ENTRYPOINT ["/entrypoint.sh"]
-CMD ["odoo"]
+CMD ["python3", "/odoo/odoo-bin", "-c", "/etc/odoo/odoo.conf", "--proxy-mode"]
