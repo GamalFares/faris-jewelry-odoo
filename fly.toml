@@ -1,0 +1,29 @@
+app = "faris-jewelry-odoo"
+
+[build]
+  dockerfile = "Dockerfile"
+
+[env]
+  ODOO_RC = "/etc/odoo/odoo.conf"
+
+[http_service]
+  internal_port = 8069
+  force_https = true
+  auto_stop_machines = false
+  auto_start_machines = false
+  
+  [[http_service.checks]]
+    interval = "30s"
+    grace_period = "10s"
+    method = "GET"
+    path = "/web/health"
+    timeout = "5s"
+
+[mounts]
+  source = "odoo_data"
+  destination = "/var/lib/odoo"
+
+[[vm]]
+  cpu_kind = "shared"
+  cpus = 1
+  memory_mb = 1024
