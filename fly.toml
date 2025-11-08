@@ -1,35 +1,18 @@
-# fly.toml app configuration file generated for faris-jewelry-odoo-autumn-dust-7814 on 2025-11-08T19:28:57+02:00
-#
-# See https://fly.io/docs/reference/configuration/ for information about how to use this file.
-#
-
-app = 'faris-jewelry-odoo-autumn-dust-7814'
-primary_region = 'cdg'
+app = "faris-jewelry-odoo"
 
 [build]
-  dockerfile = 'Dockerfile'
+  dockerfile = "Dockerfile"
 
 [env]
-  ODOO_RC = '/etc/odoo/odoo.conf'
-
-[[mounts]]
-  source = 'odoo_data'
-  destination = '/var/lib/odoo'
+  ODOO_RC = "/etc/odoo/odoo.conf"
 
 [http_service]
   internal_port = 8069
   force_https = true
-  auto_stop_machines = 'off'
-  auto_start_machines = false
-
+  
   [[http_service.checks]]
-    interval = '30s'
-    timeout = '5s'
-    grace_period = '10s'
-    method = 'GET'
-    path = '/web/health'
-
-[[vm]]
-  memory = '1gb'
-  cpu_kind = 'shared'
-  cpus = 1
+    interval = "30s"
+    grace_period = "10s"
+    method = "GET"
+    path = "/web"
+    timeout = "10s"
