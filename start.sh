@@ -5,6 +5,9 @@ echo "=========================================="
 echo "=== Faris Jewelry Odoo - Starting ==="
 echo "=========================================="
 
+# Wait a bit for everything to settle
+sleep 10
+
 # Set PostgreSQL environment variables from Render
 export PGHOST="${DB_HOST}"
 export PGPORT="${DB_PORT:-5432}"
